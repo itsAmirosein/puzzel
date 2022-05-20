@@ -43,7 +43,11 @@ interface StyledItemProps {
   move?:'left'|'right'|'bottom'|'top'|'none'|undefined,
   x:string;
   y:string;
-  content:number|undefined
+  content:number|undefined;
+  pinIndex:{
+    x:string;
+    y:string;
+  }
 }
 
 export const PuzzelItem = styled.div<StyledItemProps>`
@@ -55,5 +59,6 @@ display: flex;
 justify-content: center;
 align-items: center;
 transition: all 1s;
+background: url('https://source.unsplash.com/random/500x500') ${props=>props.pinIndex.y} ${props=>props.pinIndex.x};
 ${(props)=>props.content!==undefined&&`transform: translate(${props.y},${props.x})`};
 `
