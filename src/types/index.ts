@@ -5,7 +5,9 @@ export type PuzzelItemType = {
     picIndex:{
         x:number,
         y:number
-    }
+    },
+    id:number,
+    isEmpty:boolean
 }
 
 export type Move = {

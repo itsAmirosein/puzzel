@@ -44,21 +44,22 @@ interface StyledItemProps {
   x:string;
   y:string;
   content:number|undefined;
-  pinIndex:{
+  picIndex:{
     x:string;
     y:string;
-  }
+  },
+  isEmpty:boolean
 }
 
 export const PuzzelItem = styled.div<StyledItemProps>`
 position:absolute;
 width: 100px;
 height: 100px;
-border: 1px solid red;
+${(props)=>!props.isEmpty&&`border: 1px solid red`};
 display: flex;
 justify-content: center;
 align-items: center;
 transition: all 1s;
-background: url('https://source.unsplash.com/random/500x500') ${props=>props.pinIndex.y} ${props=>props.pinIndex.x};
-${(props)=>props.content!==undefined&&`transform: translate(${props.y},${props.x})`};
+${(props)=>!props.isEmpty&&`background: url(https://source.unsplash.com/random/500x500) ${props.picIndex.y} ${props.picIndex.x}`};
+transform: translate(${props=>props.y},${props=>props.x});
 `
