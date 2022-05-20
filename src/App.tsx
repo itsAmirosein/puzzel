@@ -1,7 +1,11 @@
-
 import "./App.css";
-import { PuzzelItemType } from './types'
-import { Container, GlobalStyles, PuzzelContainer, PuzzelItem } from "./styles/styledComponents";
+import { Move, PuzzelItemType } from "./types";
+import {
+  Container,
+  GlobalStyles,
+  PuzzelContainer,
+  PuzzelItem,
+} from "./styles/styledComponents";
 import { useState } from "react";
 const puzzelItems: PuzzelItemType[] = [
   { x: 1, y: 1, item: 1 },
@@ -29,59 +33,112 @@ const puzzelItems: PuzzelItemType[] = [
   { x: 5, y: 3, item: 23 },
   { x: 5, y: 4, item: 24 },
   { x: 5, y: 5, item: undefined },
-]
-
+];
 
 function App() {
-
-  const [puzzelItms, setPuzzelItms] = useState<PuzzelItemType[]>(puzzelItems)
+  const [puzzelItms, setPuzzelItms] = useState<PuzzelItemType[]>(puzzelItems);
 
   function handleOnItemClick(puzzelItem: PuzzelItemType) {
-    ['left', 'right', 'top', 'bottom'].forEach(side => {
-      checkOtherSides(puzzelItem, side)
-    })
+    ["left", "right", "top", "bottom"].forEach((side) => {
+      checkOtherSides(puzzelItem, side);
+    });
   }
 
   function checkOtherSides(puzzelItem: PuzzelItemType, side: string) {
-    const copyPuzzelsItms = [...puzzelItms]
-    const index = puzzelItms.findIndex(item => item.x === puzzelItem.x && item.y === puzzelItem.y)
-    const copyItem = { ...puzzelItem }
-    let searchedItem: PuzzelItemType = { x: 0, y: 0, item: undefined }
+    const copyPuzzelsItms = [...puzzelItms];
+    const index = puzzelItms.findIndex(
+      (item) => item.x === puzzelItem.x && item.y === puzzelItem.y
+    );
+    const copyItem = { ...puzzelItem };
+    let searchedItemIndex = -1;
     switch (side) {
-      case 'right':
-        searchedItem = { ...copyItem, x: copyItem.x++ }
-        break
-      case 'left':
-        searchedItem = { ...copyItem, x: copyItem.x-- }
-        break
-      case 'top':
-        searchedItem = { ...copyItem, y: copyItem.y++ }
-        break
-      case 'bottom':
-        searchedItem = { ...copyItem, y: copyItem.y++ }
-
+      case "right":
+        searchedItemIndex = copyPuzzelsItms.findIndex(
+          (item) => item.y === copyItem.y + 1 && item.x === copyItem.x
+        );
+        if (
+          searchedItemIndex !== -1 &&
+          !copyPuzzelsItms[searchedItemIndex].item
+        ) {
+          const copySearchItem = { ...copyPuzzelsItms[searchedItemIndex] };
+          copyPuzzelsItms[searchedItemIndex] = {
+            ...copySearchItem,
+            y: --copySearchItem.y,
+          };
+          copyPuzzelsItms[index] = { ...copyItem, y: ++copyItem.y };
+          setPuzzelItms(copyPuzzelsItms);
+      
+        }
+        break;
+      case "left":
+        searchedItemIndex = copyPuzzelsItms.findIndex(
+          (item) => item.y === copyItem.y - 1 && item.x === copyItem.x
+        );
+        if (
+          searchedItemIndex !== -1 &&
+          !copyPuzzelsItms[searchedItemIndex].item
+        ) {
+          const copySearchItem = { ...copyPuzzelsItms[searchedItemIndex] };
+          copyPuzzelsItms[searchedItemIndex] = {
+            ...copySearchItem,
+            y: ++copySearchItem.y,
+          };
+          copyPuzzelsItms[index] = { ...copyItem, y: --copyItem.y };
+          setPuzzelItms(copyPuzzelsItms);
+        }
+        break;
+      case "top":
+        searchedItemIndex = copyPuzzelsItms.findIndex(
+          (item) => item.y === copyItem.y && item.x === copyItem.x - 1
+        );
+        if (
+          searchedItemIndex !== -1 &&
+          !copyPuzzelsItms[searchedItemIndex].item
+        ) {
+          const copySearchItem = { ...copyPuzzelsItms[searchedItemIndex] };
+          copyPuzzelsItms[searchedItemIndex] = {
+            ...copySearchItem,
+            x: ++copySearchItem.x,
+          };
+          copyPuzzelsItms[index] = { ...copyItem, x: --copyItem.x };
+          setPuzzelItms(copyPuzzelsItms);
+        }
+        break;
+      case "bottom":
+        searchedItemIndex = copyPuzzelsItms.findIndex(
+          (item) => item.y === copyItem.y && item.x === copyItem.x + 1
+        );
+        if (
+          searchedItemIndex !== -1 &&
+          !copyPuzzelsItms[searchedItemIndex].item
+        ) {
+          const copySearchItem = { ...copyPuzzelsItms[searchedItemIndex] };
+          copyPuzzelsItms[searchedItemIndex] = {
+            ...copySearchItem,
+            x: --copySearchItem.x,
+          };
+          copyPuzzelsItms[index] = { ...copyItem, x: ++copyItem.x };
+          setPuzzelItms(copyPuzzelsItms);
+        }
+        break;
     }
-    if (!searchedItem.item) {
-      searchedItem.item = copyItem.item
-      copyItem.item = undefined
-    }
-    copyPuzzelsItms[index] = copyItem
-    setPuzzelItms(copyPuzzelsItms)
   }
 
   return (
     <>
       <GlobalStyles />
       <Container>
-
         <PuzzelContainer>
-          {puzzelItems.map(item => (
-            <PuzzelItem onClick={() => handleOnItemClick(item)}>{item.item}</PuzzelItem>
+          {puzzelItms.map((item) => (
+            <PuzzelItem x={`${(item.x-1)*100}%`} y={`${(item.y-1)*100}%`}
+            content={item.item} onClick={() => handleOnItemClick(item)}>
+              {item.item}
+            </PuzzelItem>
           ))}
         </PuzzelContainer>
       </Container>
     </>
-  )
+  );
 }
 
 export default App;
