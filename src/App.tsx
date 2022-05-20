@@ -3,8 +3,12 @@ import { Move, PuzzelItemType } from "./types";
 import {
   Container,
   GlobalStyles,
+  ImgContainer,
+  MainContent,
   PuzzelContainer,
+  Img,
   PuzzelItem,
+  SideBarContainer,
 } from "./styles/styledComponents";
 import { useCallback, useEffect, useState } from "react";
 const puzzelItems: PuzzelItemType[] = [
@@ -44,7 +48,7 @@ const puzzelItems: PuzzelItemType[] = [
 
 function App() {
   const [puzzelItms, setPuzzelItms] = useState<PuzzelItemType[]>(puzzelItems);
-const [complete,setComplete] = useState<boolean>(false)
+  const [complete, setComplete] = useState<boolean>(false)
   function handleOnItemClick(puzzelItem: PuzzelItemType) {
     ["left", "right", "top", "bottom"].forEach((side) => {
       checkOtherSides(puzzelItem, side);
@@ -154,31 +158,37 @@ const [complete,setComplete] = useState<boolean>(false)
     let copyPuzzelItms = [...puzzelItms];
     copyPuzzelItms = copyPuzzelItms.filter((item) => !item.isEmpty);
     copyPuzzelItms.sort((a, b) => a.id - b.id);
-   setComplete( copyPuzzelItms.every((item) => item.id === item.item))
-    
+    setComplete(copyPuzzelItms.every((item) => item.id === item.item))
+
   }, [puzzelItms]);
 
   return (
     <>
       <GlobalStyles />
       <Container>
-        {/* <img src="https://source.unsplash.com/random/500x500" /> */}
-        <PuzzelContainer>
-          {puzzelItms.map((item) => (
-            <PuzzelItem
-              isEmpty={item.isEmpty}
-              x={`${(item.x - 1) * 100}%`}
-              y={`${(item.y - 1) * 100}%`}
-              picIndex={{
-                x: `${-(item.picIndex.x - 1) * 100}px`,
-                y: `${-(item.picIndex.y - 1) * 100}px`,
-              }}
-              content={item.item}
-              onClick={() => handleOnItemClick(item)}
-            ></PuzzelItem>
-          ))}
-        </PuzzelContainer>
-        <div>{!complete?'false':'true'}</div>
+        <SideBarContainer>
+          <ImgContainer>
+            <Img src='https://source.unsplash.com/random/500x500' />
+          </ImgContainer>
+        </SideBarContainer>
+        <MainContent>
+          <PuzzelContainer>
+            {puzzelItms.map((item) => (
+              <PuzzelItem
+                isEmpty={item.isEmpty}
+                x={`${(item.x - 1) * 100}%`}
+                y={`${(item.y - 1) * 100}%`}
+                picIndex={{
+                  x: `${-(item.picIndex.x - 1) * 100}px`,
+                  y: `${-(item.picIndex.y - 1) * 100}px`,
+                }}
+                content={item.item}
+                onClick={() => handleOnItemClick(item)}
+              ></PuzzelItem>
+            ))}
+          </PuzzelContainer>
+        </MainContent>
+        {/* <div>{!complete ? 'false' : 'true'}</div> */}
       </Container>
     </>
   );
